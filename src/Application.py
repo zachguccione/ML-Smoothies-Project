@@ -4,62 +4,70 @@ from tkinter import messagebox
 import numpy as np
 import joblib
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+import csv
 
 # Import model
 model = joblib.load('src/kmeans_model.pkl')
 
 # features
-feature_names = [
-       'Age', 'Gender', 'Weight (kg)', 'Height (m)', 'Max_BPM', 'Avg_BPM',
-       'Resting_BPM', 'Session_Duration (hours)', 'Calories_Burned',
-       'Workout_Type', 'Fat_Percentage', 'Water_Intake (liters)',
-       'Workout_Frequency (days/week)', 'Experience_Level', 'BMI'
-]
+feature_names = ['Age' 'Height (m)' 'Max_BPM' 'Avg_BPM' 'Resting_BPM'
+ 'Session_Duration (hours)' 'Calories_Burned' 'Fat_Percentage'
+ 'Water_Intake (liters)' 'Workout_Frequency (days/week)'
+ 'Experience_Level' 'BMI' 'Gender_Male' 'Workout_Type_Cardio'
+ 'Workout_Type_HIIT' 'Workout_Type_Strength' 'Workout_Type_Yoga']
 
-# Function to handle prediction
-def predict_cluster():
+def save_input_vector_to_dataframe():
     try:
         # Collect input values
         age = float(entry_age.get())
+        gender = "Male" if gender_var.get() == 1 else "Female"
         weight = float(entry_weight.get())
-        gender = gender_var.get()
         height = float(entry_height.get())
-        resting_bpm = float(entry_resting_bpm.get())
         max_bpm = float(entry_max_bpm.get())
         avg_bpm = float(entry_avg_bpm.get())
+        resting_bpm = float(entry_resting_bpm.get())
         session_duration = float(entry_session_duration.get())
         calories_burned = float(entry_calories_burned.get())
+        workout_type = workout_type_var.get()
         fat_percentage = float(entry_fat_percentage.get())
         water_intake = float(entry_water_intake.get())
         workout_frequency = int(workout_frequency_var.get())
-        workout_type = workout_type_var.get()
         experience_level = experience_level_var.get()
         bmi = weight / height ** 2
 
-        # Example feature vector
-        features = np.array([
-        age, gender, weight, height, max_bpm, avg_bpm,
-        resting_bpm, session_duration, calories_burned,
-        workout_type, fat_percentage, water_intake,
-        workout_frequency, experience_level, bmi]).reshape(1, -1)
-        
-        # Saving the dataframe of our features
-        features_df = pd.DataFrame(features, columns=feature_names)
+        # Construct a dictionary to mimic the DataFrame
+        input_data = {
+            "Age": [age],
+            "Gender": [gender],
+            "Weight (kg)": [weight],
+            "Height (m)": [height],
+            "Max_BPM": [max_bpm],
+            "Avg_BPM": [avg_bpm],
+            "Resting_BPM": [resting_bpm],
+            "Session_Duration (hours)": [session_duration],
+            "Calories_Burned": [calories_burned],
+            "Workout_Type": [workout_type],
+            "Fat_Percentage": [fat_percentage],
+            "Water_Intake (liters)": [water_intake],
+            "Workout_Frequency (days/week)": [workout_frequency],
+            "Experience_Level": [experience_level],
+            "BMI": [bmi],
+        }
 
-        # Scaling our features
-        scaler = StandardScaler()
-        scaled_features = scaler.fit_transform(features_df[['Age', 'Height (m)', 'Weight (kg)', 'Calories_Burned', 'BMI']])
+        # Create a DataFrame
+        input_df = pd.DataFrame(input_data)
 
-        print("Features:", features_df)
-        # Placeholder for predicted cluster
-        cluster = model.predict(features_df)
-        messagebox.showinfo("Result", f"The feature vector belongs to Cluster: {cluster}")
+        # Save to a CSV file for further processing
+        csv_file = "input_features.csv"
+        input_df.to_csv(csv_file, index=False)
+
+        messagebox.showinfo("Success", f"Input features saved to {csv_file}")
+
     except ValueError:
         messagebox.showerror("Error", "Please enter valid numeric values in all fields.")
 
 # Create the main application window
-app = ttk.Window(themename="litera")  # Choose a theme: "litera", "darkly", etc.
+app = ttk.Window(themename="litera")
 app.title("Smoothie Predictor")
 app.geometry("750x825")
 
@@ -91,10 +99,10 @@ entry_resting_bpm.grid(row=11, column=0, padx=20, sticky="w")
 
 workout_type_var = ttk.IntVar(value=1)
 ttk.Label(app, text="Workout Type:", font=("Arial", 12)).grid(row=1, column=1, sticky="w", padx=20, pady=5)
-ttk.Radiobutton(app, text="HIIT", variable=workout_type_var, value=0, bootstyle="success").grid(row=2, column=1, sticky="w", padx=40, pady=5)
-ttk.Radiobutton(app, text="Yoga", variable=workout_type_var, value=1, bootstyle="success").grid(row=3, column=1, sticky="w", padx=40, pady=5)
-ttk.Radiobutton(app, text="Cardio", variable=workout_type_var, value=2, bootstyle="success").grid(row=4, column=1, sticky="w", padx=40, pady=5)
-ttk.Radiobutton(app, text="Strength", variable=workout_type_var, value=3, bootstyle="success").grid(row=5, column=1, sticky="w", padx=40, pady=5)
+ttk.Radiobutton(app, text="HIIT", variable=workout_type_var, value="HIIT", bootstyle="success").grid(row=2, column=1, sticky="w", padx=40, pady=5)
+ttk.Radiobutton(app, text="Yoga", variable=workout_type_var, value="Yoga", bootstyle="success").grid(row=3, column=1, sticky="w", padx=40, pady=5)
+ttk.Radiobutton(app, text="Cardio", variable=workout_type_var, value="Cardio", bootstyle="success").grid(row=4, column=1, sticky="w", padx=40, pady=5)
+ttk.Radiobutton(app, text="Strength", variable=workout_type_var, value="Strength", bootstyle="success").grid(row=5, column=1, sticky="w", padx=40, pady=5)
 
 ttk.Label(app, text="Max BPM:", font=("Arial", 12)).grid(row=6, column=1, sticky="w", padx=20, pady=5)
 entry_max_bpm = ttk.Entry(app, width=30)
@@ -138,7 +146,7 @@ ttk.Radiobutton(app, text="Advanced", variable=experience_level_var, value=3, bo
 ttk.Button(
     app, 
     text="Predict", 
-    command=predict_cluster, 
+    command=save_input_vector_to_csv, 
     bootstyle="primary"
 ).grid(row=22, column=0, columnspan=2, pady=30, sticky="w", padx=300)
 
