@@ -1,2 +1,2 @@
-Age,Gender,Weight (kg),Height (m),Max_BPM,Avg_BPM,Resting_BPM,Session_Duration (hours),Calories_Burned,Fat_Percentage,Water_Intake (liters),Workout_Frequency (days/week),Experience_Level,BMI,Workout_Type_Cardio,Workout_Type_HIIT,Workout_Type_Strength,Workout_Type_Yoga
-22.0,Male,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1,1,0.5,0,1,0,0
+Age,Gender,Weight (kg),Height (m),Max_BPM,Avg_BPM,Resting_BPM,Session_Duration (hours),Calories_Burned,Workout_Type,Fat_Percentage,Water_Intake (liters),Workout_Frequency (days/week),Experience_Level,BMI
+2.0,Male,2.0,2.0,2.0,2.0,2.0,2.0,2.0,HIIT,2.0,2.0,1,1,0.5

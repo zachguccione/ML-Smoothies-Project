@@ -54,23 +54,19 @@ def save_input_vector_to_dataframe():
             "Resting_BPM": [resting_bpm],
             "Session_Duration (hours)": [session_duration],
             "Calories_Burned": [calories_burned],
+            "Workout_Type": [workout_type],
             "Fat_Percentage": [fat_percentage],
             "Water_Intake (liters)": [water_intake],
             "Workout_Frequency (days/week)": [workout_frequency],
             "Experience_Level": [experience_level],
             "BMI": [bmi],
-            # Include one-hot encoded workout type columns
-            "Workout_Type_Cardio": [workout_type_one_hot[0]],
-            "Workout_Type_HIIT": [workout_type_one_hot[1]],
-            "Workout_Type_Strength": [workout_type_one_hot[2]],
-            "Workout_Type_Yoga": [workout_type_one_hot[3]],
         }
 
         # Create a DataFrame
         input_df = pd.DataFrame(input_data)
 
         # Save to a CSV file for further processing
-        csv_file = "../data/input_features.csv"
+        csv_file = "data/input_features.csv"
         input_df.to_csv(csv_file, index=False)
 
         messagebox.showinfo("Success", f"Input features saved to {csv_file}")
