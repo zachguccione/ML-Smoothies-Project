@@ -97,5 +97,53 @@ with open('models/kmeans_model.pkl', 'rb') as f:
 # Predict the cluster for the input data
 cluster = kmeans_model.predict(df)
 
-# Save the cluster to a file
-print(cluster)
+#######################################
+# Returning Smoothie Based on Cluster #
+#######################################
+# Cluster 0
+if cluster == 0:
+    print("Cluster 0: Cardio-Focused")
+    print("")
+    print("Building the Smoothie:")
+    print("Cinnamon for Anti-inflammatory")
+    print("Matcha for Energy")
+    print("Berries for Antioxidants/inflammation reduction")
+    print("Whey Protein for protein")
+    print("Chia seeds for omega-3s and fiber")
+# Cluster 1
+elif cluster == 1:
+    print("Cluster 1: Endurance Booster")
+    print("")
+    print("Building the Smoothie:")
+    print("Coconut water for hydration")
+    print("Bananas for sugar and potassium")
+    print("Almond butter for sustain energy")
+    print("Greek yogurt for protein")
+# Cluster 2
+elif cluster == 2:
+    print("Cluster 2: Strength and High Intensity")
+    print("")
+    print("Building the Smoothie:")
+    print("Whey protein for muscle")
+    print("Dairy milk for extra protein")
+    print("Almond butter for calories")
+    print("Creatine to increase muscle mass")
+    print("Rolled oats to provide energy")
+# Cluster 3
+elif cluster == 3:
+    print("Cluster 3: Weight Loss Beginners")
+    print("")
+    print("Building the Smoothie:")
+    print("Almond milk for a low-calorie base")
+    print("Lemon and Cucumber for a hydrating effect")
+    print("Spinach for micro-nutrients")
+    print("Ginger to boost digestion and metabolism")
+    print("Watermelon to add sweetness")
+else:
+    print("Cluster 4: Balance Energy for Beginners")
+    print("")
+    print("​Building the Smoothie:")
+    print("Apple for fiber and sweetness")
+    print("Coconut water for hydration")
+    print("Greek yogurt for protein")
+    print("Chia seeds for nutrition boost and satiation")

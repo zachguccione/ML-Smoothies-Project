@@ -2,6 +2,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
 import pandas as pd
+import subprocess
 
 # features
 feature_names = ['Age' 'Height (m)' 'Max_BPM' 'Avg_BPM' 'Resting_BPM'
@@ -9,6 +10,7 @@ feature_names = ['Age' 'Height (m)' 'Max_BPM' 'Avg_BPM' 'Resting_BPM'
  'Water_Intake (liters)' 'Workout_Frequency (days/week)'
  'Experience_Level' 'BMI' 'Gender_Male' 'Workout_Type_Cardio'
  'Workout_Type_HIIT' 'Workout_Type_Strength' 'Workout_Type_Yoga']
+
 
 def save_input_vector_to_dataframe():
     try:
@@ -66,7 +68,21 @@ def save_input_vector_to_dataframe():
         csv_file = "data/input_features.csv"
         input_df.to_csv(csv_file, index=False)
 
-        messagebox.showinfo("Success", f"Input features saved to {csv_file}")
+        # Run another script and capture its output
+        try:
+            result = subprocess.run(
+                ['python', 'src/Vector to Model.py'],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            # Display the script's output
+            output = result.stdout.strip()
+            messagebox.showinfo("Success", f"Input features saved to {csv_file}\n\nScript Output:\n{output}")
+
+        except subprocess.CalledProcessError as e:
+            # Display errors from the script
+            messagebox.showerror("Script Error", f"An error occurred while processing the script:\n{e.stderr}")
 
     except ValueError as e:
         messagebox.showerror("Error", f"Invalid input: {e}")
