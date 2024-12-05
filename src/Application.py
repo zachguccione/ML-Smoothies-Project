@@ -1,10 +1,7 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
-import numpy as np
-import joblib
 import pandas as pd
-import csv
 
 # features
 feature_names = ['Age' 'Height (m)' 'Max_BPM' 'Avg_BPM' 'Resting_BPM'
@@ -30,7 +27,7 @@ def save_input_vector_to_dataframe():
         water_intake = float(entry_water_intake.get())
         workout_frequency = int(workout_frequency_var.get())
         experience_level = experience_level_var.get()
-        bmi = weight / height ** 2
+        bmi = (weight / (height ** 2))
 
         # Map workout type to one-hot encoding
         workout_type_map = {
