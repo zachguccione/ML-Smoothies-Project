@@ -6,9 +6,6 @@ import joblib
 import pandas as pd
 import csv
 
-# Import model
-model = joblib.load('src/kmeans_model.pkl')
-
 # features
 feature_names = ['Age' 'Height (m)' 'Max_BPM' 'Avg_BPM' 'Resting_BPM'
  'Session_Duration (hours)' 'Calories_Burned' 'Fat_Percentage'
@@ -28,12 +25,23 @@ def save_input_vector_to_dataframe():
         resting_bpm = float(entry_resting_bpm.get())
         session_duration = float(entry_session_duration.get())
         calories_burned = float(entry_calories_burned.get())
-        workout_type = workout_type_var.get()
+        workout_type = workout_type_var.get()  # This is the workout type as a string (e.g., "Strength")
         fat_percentage = float(entry_fat_percentage.get())
         water_intake = float(entry_water_intake.get())
         workout_frequency = int(workout_frequency_var.get())
         experience_level = experience_level_var.get()
         bmi = weight / height ** 2
+
+        # Map workout type to one-hot encoding
+        workout_type_map = {
+            "Cardio": [1, 0, 0, 0],
+            "HIIT": [0, 1, 0, 0],
+            "Strength": [0, 0, 1, 0],
+            "Yoga": [0, 0, 0, 1],
+        }
+        if workout_type not in workout_type_map:
+            raise ValueError(f"Invalid Workout_Type: {workout_type}")
+        workout_type_one_hot = workout_type_map[workout_type]
 
         # Construct a dictionary to mimic the DataFrame
         input_data = {
@@ -46,25 +54,29 @@ def save_input_vector_to_dataframe():
             "Resting_BPM": [resting_bpm],
             "Session_Duration (hours)": [session_duration],
             "Calories_Burned": [calories_burned],
-            "Workout_Type": [workout_type],
             "Fat_Percentage": [fat_percentage],
             "Water_Intake (liters)": [water_intake],
             "Workout_Frequency (days/week)": [workout_frequency],
             "Experience_Level": [experience_level],
             "BMI": [bmi],
+            # Include one-hot encoded workout type columns
+            "Workout_Type_Cardio": [workout_type_one_hot[0]],
+            "Workout_Type_HIIT": [workout_type_one_hot[1]],
+            "Workout_Type_Strength": [workout_type_one_hot[2]],
+            "Workout_Type_Yoga": [workout_type_one_hot[3]],
         }
 
         # Create a DataFrame
         input_df = pd.DataFrame(input_data)
 
         # Save to a CSV file for further processing
-        csv_file = "input_features.csv"
+        csv_file = "../data/input_features.csv"
         input_df.to_csv(csv_file, index=False)
 
         messagebox.showinfo("Success", f"Input features saved to {csv_file}")
 
-    except ValueError:
-        messagebox.showerror("Error", "Please enter valid numeric values in all fields.")
+    except ValueError as e:
+        messagebox.showerror("Error", f"Invalid input: {e}")
 
 # Create the main application window
 app = ttk.Window(themename="litera")
@@ -97,7 +109,8 @@ ttk.Label(app, text="Resting BPM:", font=("Arial", 12)).grid(row=10, column=0, s
 entry_resting_bpm = ttk.Entry(app, width=30)
 entry_resting_bpm.grid(row=11, column=0, padx=20, sticky="w")
 
-workout_type_var = ttk.IntVar(value=1)
+# Correct variable type for workout type
+workout_type_var = ttk.StringVar(value="HIIT")  # Default to "HIIT"
 ttk.Label(app, text="Workout Type:", font=("Arial", 12)).grid(row=1, column=1, sticky="w", padx=20, pady=5)
 ttk.Radiobutton(app, text="HIIT", variable=workout_type_var, value="HIIT", bootstyle="success").grid(row=2, column=1, sticky="w", padx=40, pady=5)
 ttk.Radiobutton(app, text="Yoga", variable=workout_type_var, value="Yoga", bootstyle="success").grid(row=3, column=1, sticky="w", padx=40, pady=5)
@@ -146,7 +159,7 @@ ttk.Radiobutton(app, text="Advanced", variable=experience_level_var, value=3, bo
 ttk.Button(
     app, 
     text="Predict", 
-    command=save_input_vector_to_csv, 
+    command=save_input_vector_to_dataframe, 
     bootstyle="primary"
 ).grid(row=22, column=0, columnspan=2, pady=30, sticky="w", padx=300)
 
